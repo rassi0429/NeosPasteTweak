@@ -14,7 +14,7 @@ namespace NeosPasteTweak
     {
         public override string Name => "NeosPasteTweak";
         public override string Author => "kka429";
-        public override string Version => "1.0.0";
+        public override string Version => "1.0.1";
         public override string Link => "https://github.com/rassi0429/NeosPasteTweak"; // this line is optional and can be omitted
 
         public override void OnEngineInit()
@@ -42,7 +42,7 @@ namespace NeosPasteTweak
                 foreach (string str in files)
                 {
                     AssetClass key = AssetHelper.IdentifyClass(str);
-                    Msg(key);
+                    // Msg(key);
                     if(key == AssetClass.Unknown)
                     {
                         if (Uri.IsWellFormedUriString(str, UriKind.Absolute))
