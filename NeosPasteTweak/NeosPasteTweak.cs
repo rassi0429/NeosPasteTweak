@@ -13,11 +13,17 @@ namespace NeosPasteTweak
     {
         public override string Name => "NeosPasteTweak";
         public override string Author => "kka429";
-        public override string Version => "1.0.2";
+        public override string Version => "1.1.0";
         public override string Link => "https://github.com/rassi0429/NeosPasteTweak"; // this line is optional and can be omitted
+
+        [AutoRegisterConfigKey]
+        public static ModConfigurationKey<bool> PREVENT_DOUBLE_PASTE_KEY = new("prevent_double_paste", "Prevents pasting file paths and folder links as text viewers / urls", ()=>true);
+
+        public static ModConfiguration config;
 
         public override void OnEngineInit()
         {
+            config = GetConfiguration();
             Harmony harmony = new Harmony("dev.kokoa.neospastetweak");
             harmony.PatchAll();
         }
@@ -48,11 +54,12 @@ namespace NeosPasteTweak
                 foreach (string str in files)
                 {
                     AssetClass key = AssetHelper.IdentifyClass(str);
-                    // Msg(key);
                     if(key == AssetClass.Unknown)
                     {
-                        if (Uri.IsWellFormedUriString(str, UriKind.Absolute))
+                        Uri uri;
+                        if (Uri.TryCreate(str, UriKind.Absolute, out uri))
                         {
+                            if (config.GetValue(PREVENT_DOUBLE_PASTE_KEY) && (uri.Scheme == "neosrec" || uri.Scheme == "file")) return;
                             string json = Items.LINK_VIEWER;
                             DataTreeDictionary urlObject = DataTreeConverter.FromJSON(json);
 
@@ -60,9 +67,9 @@ namespace NeosPasteTweak
                             newSlot.LoadObject(urlObject);
                             newSlot.GlobalPosition = __state.pos;
                             newSlot.GlobalRotation = __state.rot;
-                            newSlot.GetComponent<ValueField<string>>().Value.Value = str;
+                            newSlot.GetComponent<ValueField<string>>().Value.Value = uri.ToString();
                         }
-                        else
+                        else if(!(config.GetValue(PREVENT_DOUBLE_PASTE_KEY) && File.Exists(str)))
                         {
                             string json = Items.TEXT_VIEWER;
                             DataTreeDictionary textObject = DataTreeConverter.FromJSON(json);
