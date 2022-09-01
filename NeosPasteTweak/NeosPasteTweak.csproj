@@ -6,7 +6,7 @@
     <RootNamespace>NeosPasteTweak</RootNamespace>
     <AssemblyTitle>NeosPasteTweak</AssemblyTitle>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <LangVersion>10</LangVersion>
+    <LangVersion>preview</LangVersion>
     <TargetFramework>net472</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
